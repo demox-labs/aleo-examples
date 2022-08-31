@@ -25,6 +25,9 @@ function start_battleship:
     input r0 as board.aleo/board_state.record;
     input r1 as move.aleo/move.record;
 
+    assert.eq r0.player_1 r1.player_2;
+    assert.eq r0.player_2 r1.player_1;
+
     call board.aleo/start_board r0 into r2;
     call move.aleo/start_game r0.player_2 into r3;
 

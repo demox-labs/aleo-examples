@@ -1,3 +1,23 @@
+Quick Start:
+aleo run initialize_board 17870424623691071000u64 player_2_address
+
+aleo run offer_battleship 'board_state_record'
+
+switch program.json to player 2
+
+aleo run initialize_board 17870424623691071000u64 player_1_address
+
+aleo run start_battleship 'board_state_record' 'move_record'
+
+switch program.json to player 1
+
+aleo run play 'move_record' 4398046511104u64
+
+switch program.json to player 2
+
+aleo run play 'move_record' 8u64
+
+
 sample valid board: 17870424623691071000u64 corresponds to 
 
 1111100000000000100000001000001110000000100000000000000000111000
@@ -14,23 +34,6 @@ sample valid board: 17870424623691071000u64 corresponds to
 1 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0
 0 0 1 1 1 0 0 0
-
-1 1 1 1 1 * 2**3 * (2**8)**7
-2**(ship_length - 1) = 11111
-11111000 00000000 00000000 00000000 00000000 00000000
-
-1 1 1 1 1 0 0 0
-0 0 0 0 0 0 0 0
-1 0 0 0 0 0 0 0
-1 0 0 0 0 0 0 0
-1 0 0 0 0 0 0 1
-1 0 0 0 0 0 0 1
-0 0 0 0 0 0 0 1
-0 0 1 1 1 0 0 1
-
-00000000 00000000 10000000 10000000 10000000 10000000 00000000 00000000
-1 + 1 * 2**8 + 1 * (2**8)**2 + 1 * (2**8)**3
-00000001 00000001 00000001 00000001
 
 aleo run initialize_board 17870424623691071000u64
 
@@ -55,3 +58,18 @@ aleo run play '{
   ships: 17870424623691071000u64.private,
   _nonce: 2115279065454056183560058471951817240373270577101835052641672305325014426852group.public
 }' 4398046511104u64
+
+sample hit: 8u64 corresponds to
+
+0000000000000000000000000000000000000000000000000000000000001000
+
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+0 0 0 0 1 0 0 0
+
+aleo run play

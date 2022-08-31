@@ -1,0 +1,11 @@
+Player 1
+
+Private Key  APrivateKey1zkp7PTyptYyabsCDjcuvtWVh9EMKUnFeCybeQ6h8MBf5znB
+     View Key  AViewKey1eyAzCkyqCA8EmLtVBmW9DGmjVwmhQFe17BHsUe2TwTJF
+      Address  aleo1d6rm3thh8tdepykapvj9ph6pgta69w5nqlm3h698hgt6hfnfevyq5xkd42
+
+Player 2
+
+Private Key  APrivateKey1zkp3gT5ahXizBZtgJAxTwtgy5e2dh7wSrptDBTsbzisvJBS
+     View Key  AViewKey1to1rXnTM9S6QpiHaE31Tw7atvY54U3SKv6qWTxzx3wQK
+      Address  aleo10z7anrc0cmw0r68vq67000ruxsmjtt3qd2sml0v23rhq0mr6lqzq3zdaq4
