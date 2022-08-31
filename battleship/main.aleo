@@ -1,16 +1,22 @@
 import board.aleo;
 import move.aleo;
+import verify.aleo;
 
 // The 'battleship.aleo' program.
 program battleship.aleo;
 
 function initialize_board:
-    input r0 as u64.private;
-    input r1 as address.private;
+    input r0 as u64.private; // Carrier, length 5
+    input r1 as u64.private; // Battleship, length 4
+    input r2 as u64.private; // Cruiser, length 3
+    input r3 as u64.private; // Destroyer, length 2
+    input r4 as address.private;
 
-    call board.aleo/initialize_board r0 r1 into r2;
+    call verify.aleo/create_board r0 r1 r2 r3 into r5;
 
-    output r2 as board.aleo/board_state.record;
+    call board.aleo/initialize_board r5 r4 into r6;
+
+    output r6 as board.aleo/board_state.record;
 
 function offer_battleship:
     input r0 as board.aleo/board_state.record;
