@@ -1,0 +1,10 @@
+{
+    "program": "closure_example.aleo",
+    "version": "0.0.0",
+    "description": "",
+    "development": {
+        "private_key": "APrivateKey1zkp2MkTc3VZTpr2gMHFpHD8u2bRSMbm2v91hFnJoKgFnUeQ",
+        "address": "aleo14pe9hc3u3z9nk6tx9zspetsya68wesrfxykm6rxwefycd90aq58s2p4yn9"
+    },
+    "license": "MIT"
+}
