@@ -1,6 +1,6 @@
 program verify.aleo;
 
-closure bitcount:
+closure c_bitcount:
     input r0 as u64;
 
     div r0 2u64 into r1;
@@ -22,62 +22,63 @@ closure bitcount:
 
     output r13 as u64;
 
-// Check that two ones are present
-closure check_bitcount:
-    input r0 as u64; // Ship bitstring
-    input r1 as u64; // Ship length
-
-    call bitcount r0 into r2;
-    is.eq r2 r1 into r3;
-
-    output r3 as boolean; 
-
-// Check that two ones are adjacent, assuming only two ones
-closure adjacency_check:
+// Check that flipped bits are adjacent, assuming only adjacency as passed in with r1
+closure c_adjacency_check:
     input r0 as u64; // Ship bitstring
     input r1 as u64; // Ship length vertical or horizontal bitstring
 
-    div r0 r1 into r2;
-    sub r2 1u64 into r3;
-    and r2 r3 into r4;
+    div r0 r1 into r2; // this may result in 0
+    // subtracting 1 from 0 will cause an underflow
+    is.eq r2 0u64 into r3;
+    // setting to 3 will guarantee failure
+    ternary r3 3u64 r2 into r4;
 
-    is.eq r4 0u64 into r5;
+    sub r4 1u64 into r5;
+    and r4 r5 into r6;
 
-    output r5 as boolean;
+    is.eq r6 0u64 into r7;
+
+    output r7 as boolean;
 
 // Check that two adjacent ones don't split a row of size 8
-closure horizontal_check:
+closure c_horizontal_check:
     input r0 as u64; // Ship bitstring
     input r1 as u64; // Ship length horizontal bitstring
 
     rem r0 255u64 into r2;
     div r2 r1 into r3;
-    sub r3 1u64 into r4;
-    and r3 r4 into r5;
 
-    is.eq r5 0u64 into r6;
-    output r6 as boolean;
-
-closure validate_ship:
-    input r0 as u64;
-    input r1 as u64; // Ship length
-    input r2 as u64; // Horizontal ship bitstring
-    input r3 as u64; // Vertical ship bitstring
-
-    call check_bitcount r0 r1 into r4;
-
-    // if horizontal
-    call adjacency_check r0 r2 into r5;
-    call horizontal_check r0 r2 into r6;
+    // subtracting 1 from 0 will cause an underflow
+    is.eq r3 0u64 into r4;
+    // setting to 3 will guarantee failure
+    ternary r4 3u64 r3 into r5;
+    sub r5 1u64 into r6;
     and r5 r6 into r7;
 
-    // if vertical
-    call adjacency_check r0 r3 into r8;
-    
-    or r7 r8 into r9;
-    and r4 r9 into r10;
+    is.eq r7 0u64 into r8;
+    output r8 as boolean;
 
-    output r10 as boolean;
+function validate_ship_placement:
+    input r0 as u64.private; // Ship placement on board
+    input r1 as u64.private; // Ship length
+    input r2 as u64.private; // Horizontal ship bitstring
+    input r3 as u64.private; // Vertical ship bitstring
+
+    // check bitcount -- all other validations depend on the bitcount being the appropriate number
+    call c_bitcount r0 into r4; // how many bits in the ship placement
+    assert.eq r4 r1;
+
+    // if horizontal
+    call c_adjacency_check r0 r2 into r5; // true if bits are adjacent horizontally
+    call c_horizontal_check r0 r2 into r6; // true if those horizontal bits are not split across rows
+    and r5 r6 into r7; // true if bits are adjacent horizontally and not split across rows
+
+    // if vertical
+    call c_adjacency_check r0 r3 into r8; // true if bits are adjacent vertically
+
+    or r7 r8 into r9; // ship is valid if valid either vertically or horizontally
+
+    output r9 as boolean.private;
 
 function create_board:
     input r0 as u64.private; // Carrier, length 5
@@ -85,22 +86,12 @@ function create_board:
     input r2 as u64.private; // Cruiser, length 3
     input r3 as u64.private; // Destroyer, length 2
 
-    call validate_ship r0 5u64 31u64 4311810305u64 into r4;
-    call validate_ship r1 4u64 15u64 16843009u64 into r5;
-    call validate_ship r2 3u64 7u64 65793u64 into r6;
-    call validate_ship r3 2u64 3u64 257u64 into r7;
+    // bitwise combine the ship placements together
+    or r0 r1 into r4;
+    or r2 r3 into r5;
+    or r4 r5 into r6; // full bitwise combination of ships
 
-    and r4 r5 into r8;
-    and r8 r6 into r9;
-    and r9 r7 into r10;
+    call c_bitcount r6 into r7;
+    assert.eq r7 14u64; // given 4 individually-valid ships, a valid combination should yield exactly 14 flipped bits.
 
-    assert.eq r10 true;
-
-    or r0 r1 into r11;
-    or r11 r2 into r12;
-    or r12 r3 into r13;
-
-    call check_bitcount r13 14u64 into r14;
-    assert.eq r14 true;
-
-    output r13 as u64.private;
+    output r6 as u64.private;

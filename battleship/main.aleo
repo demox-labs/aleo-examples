@@ -12,11 +12,20 @@ function initialize_board:
     input r3 as u64.private; // Destroyer, length 2
     input r4 as address.private;
 
-    call verify.aleo/create_board r0 r1 r2 r3 into r5;
+    call verify.aleo/validate_ship_placement r0 5u64 31u64 4311810305u64 into r5;
+    assert.eq r5 true;
+    call verify.aleo/validate_ship_placement r1 4u64 15u64 16843009u64 into r6;
+    assert.eq r6 true;
+    call verify.aleo/validate_ship_placement r2 3u64 7u64 65793u64 into r7;
+    assert.eq r7 true;
+    call verify.aleo/validate_ship_placement r3 2u64 3u64 257u64 into r8;
+    assert.eq r8 true;
 
-    call board.aleo/initialize_board r5 r4 into r6;
+    call verify.aleo/create_board r0 r1 r2 r3 into r9;
 
-    output r6 as board.aleo/board_state.record;
+    call board.aleo/initialize_board r9 r4 into r10;
+
+    output r10 as board.aleo/board_state.record;
 
 function offer_battleship:
     input r0 as board.aleo/board_state.record;
